@@ -28,10 +28,10 @@ export default function App() {
     if (!authData.username || !authData.password) return;
     try {
       if (authMode === 'login') {
-        const res = await axios.post('http://localhost:8000/auth/login', authData);
+        const res = await axios.post('https://pikabot-ai.onrender.com/auth/login', authData);
         setUser(res.data.username);
       } else {
-        await axios.post('http://localhost:8000/auth/register', authData);
+        await axios.post('https://pikabot-ai.onrender.com/auth/register', authData);
         setAuthMode('login');
       }
     } catch (err) {
@@ -47,7 +47,7 @@ export default function App() {
     if (!overrideText) setInput('');
 
     try {
-      const res = await axios.post('http://localhost:8000/chat/message', {
+      const res = await axios.post('https://pikabot-ai.onrender.com/chat/message', {
         username: user || 'guest',
         message: textToSend
       });
