@@ -1,6 +1,5 @@
 import sqlite3
 import bcrypt
-
 DB_NAME = "pikabot.db"
 
 def init_db():
