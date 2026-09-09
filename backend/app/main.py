@@ -5,7 +5,6 @@ from app.routers import auth, chat
 
 app = FastAPI(title="PikaBot API")
 
-# React Frontend CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
