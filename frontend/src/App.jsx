@@ -25,7 +25,7 @@ export default function App() {
     const cleanText = text.replace(/[*#_`]/g, '');
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.rate = 1.0;
-    utterance.pitch = 1.1;
+    utterance.pitch = 1.0;
     window.speechSynthesis.speak(utterance);
   };
 
@@ -52,7 +52,7 @@ export default function App() {
         setAuthMode('login');
       }
     } catch (err) {
-      setAuthError(err.response?.data?.detail || 'Auth Error');
+      setAuthError(err.response?.data?.detail || 'Authentication Failed');
     }
   };
 
@@ -72,14 +72,14 @@ export default function App() {
       setMessages([...newMsgs, { role: 'assistant', content: botReply }]);
       speakText(botReply);
     } catch (err) {
-      setMessages([...newMsgs, { role: 'assistant', content: 'Connection Error!' }]);
+      setMessages([...newMsgs, { role: 'assistant', content: 'Engine Error: Connection lost.' }]);
     }
   };
 
   const startVoiceInput = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert('Browser does not support Speech Recognition.');
+      alert('Speech Recognition unsupported in this browser environment.');
       return;
     }
     const recognition = new SpeechRecognition();
@@ -94,128 +94,99 @@ export default function App() {
     recognition.start();
   };
 
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-  };
-
   return (
     <div className="glass-container">
       <div className="header">
-        <div className="brand">⚡ PikaBot OS</div>
-        <div className="header-actions">
-          <button 
-            className={`btn-icon ${ttsEnabled ? 'active' : ''}`}
-            onClick={() => {
-              if (ttsEnabled) window.speechSynthesis.cancel();
-              setTtsEnabled(!ttsEnabled);
-            }}
-            title="Toggle Voice Response"
-          >
-            {ttsEnabled ? '🔊 Sound On' : '🔇 Sound Off'}
-          </button>
-
-          {user && (
-            <>
-              <StreaksBadge streak={stats.streak} xp={stats.xp} />
-              <div className="tab-buttons" style={{ display: 'inline-flex', gap: '8px', marginLeft: '10px' }}>
-                <button 
-                  className={`btn-secondary ${activeTab === 'chat' ? 'active' : ''}`} 
-                  onClick={() => setActiveTab('chat')}
-                >
-                  💬 Chat
-                </button>
-                <button 
-                  className={`btn-secondary ${activeTab === 'life' ? 'active' : ''}`} 
-                  onClick={() => setActiveTab('life')}
-                >
-                  📅 Life OS
-                </button>
-              </div>
-              <span className="user-badge" style={{ marginLeft: '10px' }}>👤 {user}</span>
-            </>
-          )}
+        <div className="brand">
+          <span>⚡</span> PIKABOT OS <span style={{ fontSize: '0.65rem', padding: '2px 6px', background: 'rgba(0, 242, 254, 0.1)', border: '1px solid rgba(0, 242, 254, 0.3)', borderRadius: '4px', color: '#00f2fe' }}>PRO v2.4</span>
         </div>
+
+        {user && (
+          <div className="header-actions">
+            <StreaksBadge streak={stats.streak} xp={stats.xp} />
+            <div className="tab-nav">
+              <button className={`tab-btn ${activeTab === 'chat' ? 'active' : ''}`} onClick={() => setActiveTab('chat')}>
+                🧠 Copilot
+              </button>
+              <button className={`tab-btn ${activeTab === 'life' ? 'active' : ''}`} onClick={() => setActiveTab('life')}>
+                📊 Life OS
+              </button>
+            </div>
+            <button 
+              onClick={() => setTtsEnabled(!ttsEnabled)}
+              style={{ background: 'transparent', border: '1px solid var(--panel-border)', color: ttsEnabled ? '#00f2fe' : '#94a3b8', padding: '6px 10px', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem' }}
+            >
+              {ttsEnabled ? '🔊 Audio On' : '🔇 Audio Muted'}
+            </button>
+          </div>
+        )}
       </div>
 
-      {!user && (
+      {!user ? (
         <div className="auth-overlay">
           <div className="auth-card">
-            <h3>{authMode === 'login' ? 'Login to PikaBot OS' : 'Register Account'}</h3>
-            {authError && <p className="error">{authError}</p>}
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{authMode === 'login' ? 'Authenticate System' : 'Create Intelligence Account'}</h2>
+            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Enter credentials to synchronize personal workspace.</p>
+            {authError && <p style={{ color: '#ff4757', fontSize: '0.8rem' }}>{authError}</p>}
             <input
               type="text"
-              placeholder="Username"
+              placeholder="Operator ID / Username"
               value={authData.username}
               onChange={(e) => setAuthData({ ...authData, username: e.target.value })}
             />
             <input
               type="password"
-              placeholder="Password"
+              placeholder="Access Key / Password"
               value={authData.password}
               onChange={(e) => setAuthData({ ...authData, password: e.target.value })}
             />
-            <button className="btn-primary" onClick={handleAuth}>
-              {authMode === 'login' ? 'Sign In' : 'Sign Up'}
+            <button className="btn-primary" style={{ height: '42px' }} onClick={handleAuth}>
+              {authMode === 'login' ? 'Initialize Session' : 'Register Operator'}
             </button>
-            <p className="toggle-auth" onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}>
-              {authMode === 'login' ? 'Need an account? Register' : 'Already registered? Login'}
+            <p style={{ fontSize: '0.8rem', color: '#94a3b8', cursor: 'pointer', textAlign: 'center' }} onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}>
+              {authMode === 'login' ? 'New operator? Request Access' : 'Existing session? Log In'}
             </p>
           </div>
         </div>
-      )}
-
-      {user && (
-        <>
+      ) : (
+        <div className="main-body">
           {activeTab === 'chat' ? (
-            <div className="chat-window">
-              {messages.length === 0 && (
-                <div className="welcome-box">
-                  <h3>Hey {user}! Welcome to PikaBot OS ⚡</h3>
-                  <p>Select a quick prompt or type anything below:</p>
-                  <div className="quick-chips">
-                    <button onClick={() => sendMessage("Explain Python decorators simply")}>💡 Explain Code</button>
-                    <button onClick={() => sendMessage("Give me 3 futuristic project ideas for AI")}>🚀 AI Ideas</button>
-                    <button onClick={() => sendMessage("Tell me a quick developer joke")}>😄 Dev Joke</button>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <div className="chat-window">
+                {messages.length === 0 && (
+                  <div style={{ textAlign: 'center', margin: 'auto', maxWidth: '500px' }}>
+                    <h3 style={{ fontSize: '1.4rem', fontWeight: 600, marginBottom: '8px' }}>PikaBot AI Copilot Online</h3>
+                    <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '24px' }}>Autonomous agent ready for complex analysis, software execution, and lifestyle scheduling.</p>
                   </div>
-                </div>
-              )}
-
-              {messages.map((m, idx) => (
-                <div key={idx} className={`msg-row ${m.role}`}>
-                  <div className="msg-bubble">
-                    <ReactMarkdown>{m.content}</ReactMarkdown>
-                    {m.role === 'assistant' && (
-                      <div className="bubble-footer">
-                        <button className="copy-btn" onClick={() => copyToClipboard(m.content)}>📋 Copy</button>
-                      </div>
-                    )}
+                )}
+                {messages.map((m, idx) => (
+                  <div key={idx} className={`msg-row ${m.role}`}>
+                    <div className="msg-bubble">
+                      <ReactMarkdown>{m.content}</ReactMarkdown>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              <div className="input-bar">
+                <button 
+                  onClick={startVoiceInput} 
+                  style={{ background: isListening ? 'rgba(255,71,87,0.2)' : 'rgba(255,255,255,0.05)', border: '1px solid var(--panel-border)', borderRadius: '10px', padding: '0 14px', color: isListening ? '#ff4757' : '#fff', cursor: 'pointer' }}
+                >
+                  🎙️
+                </button>
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                  placeholder="Execute command or consult intelligence agent..."
+                />
+                <button className="btn-primary" onClick={() => sendMessage()}>Execute</button>
+              </div>
             </div>
           ) : (
             <LifeManager username={user} API_URL={API_BASE} />
           )}
-
-          {activeTab === 'chat' && (
-            <div className="input-bar">
-              <button
-                className={`mic-btn ${isListening ? 'listening' : ''}`}
-                onClick={startVoiceInput}
-                title="Voice Command"
-              >
-                🎙️
-              </button>
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Ask PikaBot anything..."
-              />
-              <button className="btn-primary" onClick={() => sendMessage()}>Send</button>
-            </div>
-          )}
-        </>
+        </div>
       )}
     </div>
   );
