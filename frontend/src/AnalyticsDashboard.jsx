@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function AnalyticsDashboard({ stats, username }) {
   const currentLevel = Math.floor(stats.xp / 100) + 1;
   const xpProgress = stats.xp % 100;
