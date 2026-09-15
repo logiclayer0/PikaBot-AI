@@ -3,7 +3,7 @@ export default function AnalyticsDashboard({ stats, username }) {
   const currentLevel = Math.floor(stats.xp / 100) + 1;
   const xpProgress = stats.xp % 100;
 
-  return (
+ return (
     <div style={{ flex: 1, padding: '30px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
