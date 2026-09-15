@@ -4,9 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import StreaksBadge from './StreaksBadge';
 import LifeManager from './LifeManager';
 import './index.css';
-
 const API_BASE = 'https://pikabot-ai.onrender.com';
-
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
