@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 export default function LifeManager({ username, API_URL }) {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
