@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db, TaskDB
 from pydantic import BaseModel
-
 router = APIRouter(prefix="/life", tags=["Life Manager"])
 
 class TaskCreate(BaseModel):
