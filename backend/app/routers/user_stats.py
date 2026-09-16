@@ -11,7 +11,6 @@ def get_user_stats(username: str, db: Session = Depends(get_db)):
     if not user:
         return {"streak": 1, "xp": 50}
     
-    # Simple Streak Maintenance logic
     today = datetime.datetime.utcnow().date()
     last_date = user.last_active.date()
     
