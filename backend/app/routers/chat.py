@@ -9,7 +9,6 @@ ai_brain = AIBrainService()
 class ChatRequest(BaseModel):
     username: str
     message: str
-
 @router.post("/message")
 async def send_message(req: ChatRequest):
     history = get_chat_history(req.username)
