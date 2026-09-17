@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import StreaksBadge from './StreaksBadge';
 import LifeManager from './LifeManager';
+import AnalyticsDashboard from './AnalyticsDashboard';
 import './index.css';
+
 const API_BASE = 'https://pikabot-ai.onrender.com';
+
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -70,14 +73,14 @@ export default function App() {
       setMessages([...newMsgs, { role: 'assistant', content: botReply }]);
       speakText(botReply);
     } catch (err) {
-      setMessages([...newMsgs, { role: 'assistant', content: 'Engine Error: Connection lost.' }]);
+      setMessages([...newMsgs, { role: 'assistant', content: 'PikaBot Engine Error: Service unreachable.' }]);
     }
   };
 
   const startVoiceInput = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert('Speech Recognition unsupported in this browser environment.');
+      alert('Speech Recognition is unsupported in this browser.');
       return;
     }
     const recognition = new SpeechRecognition();
@@ -109,6 +112,9 @@ export default function App() {
               <button className={`tab-btn ${activeTab === 'life' ? 'active' : ''}`} onClick={() => setActiveTab('life')}>
                 📊 Life OS
               </button>
+              <button className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`} onClick={() => setActiveTab('analytics')}>
+                📈 Analytics
+              </button>
             </div>
             <button 
               onClick={() => setTtsEnabled(!ttsEnabled)}
@@ -123,18 +129,18 @@ export default function App() {
       {!user ? (
         <div className="auth-overlay">
           <div className="auth-card">
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{authMode === 'login' ? 'Authenticate System' : 'Create Intelligence Account'}</h2>
-            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Enter credentials to synchronize personal workspace.</p>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{authMode === 'login' ? 'Authenticate System' : 'Create Operator Account'}</h2>
+            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Log in to initialize PikaBot Operating System workspace.</p>
             {authError && <p style={{ color: '#ff4757', fontSize: '0.8rem' }}>{authError}</p>}
             <input
               type="text"
-              placeholder="Operator ID / Username"
+              placeholder="Username"
               value={authData.username}
               onChange={(e) => setAuthData({ ...authData, username: e.target.value })}
             />
             <input
               type="password"
-              placeholder="Access Key / Password"
+              placeholder="Password"
               value={authData.password}
               onChange={(e) => setAuthData({ ...authData, password: e.target.value })}
             />
@@ -142,19 +148,25 @@ export default function App() {
               {authMode === 'login' ? 'Initialize Session' : 'Register Operator'}
             </button>
             <p style={{ fontSize: '0.8rem', color: '#94a3b8', cursor: 'pointer', textAlign: 'center' }} onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}>
-              {authMode === 'login' ? 'New operator? Request Access' : 'Existing session? Log In'}
+              {authMode === 'login' ? 'New operator? Register account' : 'Already registered? Log in'}
             </p>
           </div>
         </div>
       ) : (
         <div className="main-body">
-          {activeTab === 'chat' ? (
+          {activeTab === 'chat' && (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <div className="chat-window">
                 {messages.length === 0 && (
-                  <div style={{ textAlign: 'center', margin: 'auto', maxWidth: '500px' }}>
-                    <h3 style={{ fontSize: '1.4rem', fontWeight: 600, marginBottom: '8px' }}>PikaBot AI Copilot Online</h3>
-                    <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '24px' }}>Autonomous agent ready for complex analysis, software execution, and lifestyle scheduling.</p>
+                  <div style={{ textAlign: 'center', margin: 'auto', maxWidth: '550px' }}>
+                    <h3 style={{ fontSize: '1.4rem', fontWeight: 600, marginBottom: '8px' }}>PikaBot Intelligence OS</h3>
+                    <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '24px' }}>
+                      Enterprise-grade copilot with full-stack analytics, task automation, and life execution models.
+                    </p>
+                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                      <button className="tab-btn" onClick={() => sendMessage("Analyze current system tasks and optimize my study schedule")}>💡 Optimize Schedule</button>
+                      <button className="tab-btn" onClick={() => sendMessage("Generate a high-level system architecture for an AI application")}>🚀 System Architecture</button>
+                    </div>
                   </div>
                 )}
                 {messages.map((m, idx) => (
@@ -176,14 +188,15 @@ export default function App() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                  placeholder="Execute command or consult intelligence agent..."
+                  placeholder="Execute command or consult intelligence copilot..."
                 />
                 <button className="btn-primary" onClick={() => sendMessage()}>Execute</button>
               </div>
             </div>
-          ) : (
-            <LifeManager username={user} API_URL={API_BASE} />
           )}
+
+          {activeTab === 'life' && <LifeManager username={user} API_URL={API_BASE} />}
+          {activeTab === 'analytics' && <AnalyticsDashboard stats={stats} username={user} />}
         </div>
       )}
     </div>
