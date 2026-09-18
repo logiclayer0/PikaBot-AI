@@ -5,7 +5,6 @@ import StreaksBadge from './StreaksBadge';
 import LifeManager from './LifeManager';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import './index.css';
-
 const API_BASE = 'https://pikabot-ai.onrender.com';
 
 export default function App() {
