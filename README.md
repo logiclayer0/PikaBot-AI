@@ -22,7 +22,6 @@
 * 📋 **One-Click Clipboard Copying:** Effortlessly copy generated code snippets or bot responses with a single click.
 * 🎨 **Sleek & Cyberpunk Theme:** Polished user interface built with modern CSS animations, glowing accents, and high-contrast dark mode support.
 * ⚡ **Lightning Fast:** Frontend optimized with Vite for microsecond HMR and instant page loads.
-
 ---
 
 ## 🏗️ Architecture & Tech Stack
