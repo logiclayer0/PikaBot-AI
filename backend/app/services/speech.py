@@ -1,5 +1,4 @@
 import speech_recognition as sr
-
 class SpeechService:
     def __init__(self):
         self.recognizer = sr.Recognizer()
