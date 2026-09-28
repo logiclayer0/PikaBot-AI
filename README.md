@@ -10,7 +10,6 @@
 🌐 **Live Application:** [https://pika-bot-ai.vercel.app/](https://pika-bot-ai.vercel.app/)
 
 ---
-
 ## ✨ Features at a Glance
 
 * 🧠 **Conversational Intelligence:** Powered by high-speed LLM inference, delivering accurate and context-aware responses instantly.
