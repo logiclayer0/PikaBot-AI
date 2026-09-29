@@ -1,7 +1,13 @@
 fastapi
+
 uvicorn[standard]
+
 groq
+
 python-dotenv
+
 bcrypt
+
 pyjwt
+
 pydantic
