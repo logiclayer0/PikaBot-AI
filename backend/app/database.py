@@ -1,8 +1,6 @@
 import sqlite3
 import bcrypt
-
 DB_NAME = "pikabot.db"
-
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
@@ -98,7 +96,6 @@ def get_or_update_stats(username):
     conn.close()
     
     return {"streak": streak or 1, "xp": xp or 50}
-
 def add_task(username, task_text):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
@@ -107,7 +104,6 @@ def add_task(username, task_text):
     conn.commit()
     conn.close()
     return {"id": task_id, "text": task_text, "completed": False}
-
 def get_user_tasks(username):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
@@ -115,7 +111,6 @@ def get_user_tasks(username):
     rows = cursor.fetchall()
     conn.close()
     return [{"id": r[0], "text": r[1], "completed": bool(r[2])} for r in rows]
-
 def toggle_task(task_id):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
