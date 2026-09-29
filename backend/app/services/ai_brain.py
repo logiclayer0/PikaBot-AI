@@ -1,15 +1,13 @@
 from app.config import settings
 from groq import Groq
-
-
 class AIBrainService:
 
   def __init__(self):
     if not settings.GROQ_API_KEY:
       raise ValueError("GROQ_API_KEY missing in environment variables!")
-    # Explicitly pass the key from config settings
+   
     self.client = Groq(api_key=settings.GROQ_API_KEY)
-    # Standard active Groq model
+
     self.model = "openai/gpt-oss-120b"
 
   async def generate_response(
